@@ -1,0 +1,3 @@
+# QiitaClientForAndroidDeveloper
+forkしてプルリク送ってください
+ちなみにエラーハンドリングをViewModelでしてるのがかなり酷いです
