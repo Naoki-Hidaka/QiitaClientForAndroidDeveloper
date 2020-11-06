@@ -2,9 +2,7 @@ package com.example.qiitaclient.domain.repository
 
 
 import com.example.qiitaclient.domain.model.Article
-import com.example.qiitaclient.domain.model.ErrorResponse
 import com.example.qiitaclient.domain.service.ApiClient
-import com.example.qiitaclient.domain.service.JsonHandler
 
 object ArticleListRepository {
 
