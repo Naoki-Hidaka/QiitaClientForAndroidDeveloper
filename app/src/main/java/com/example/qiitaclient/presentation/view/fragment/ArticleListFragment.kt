@@ -17,14 +17,18 @@ import com.example.qiitaclient.presentation.viewmodel.ArticleListViewModel
 
 class ArticleListFragment : Fragment() {
 
-    private val viewModel: ArticleListViewModel by viewModels()
+    private val viewModel: ArticleListViewModel by viewModels {
+        ArticleListViewModel.Companion.Factory(
+            activity?.application,
+            activity
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = FragmentArticleListBinding.inflate(inflater, container, false).let {
-        viewModel.getArticleList()
         it.lifecycleOwner = viewLifecycleOwner
         it.recyclerView.apply {
             adapter = ArticleListAdapter()
