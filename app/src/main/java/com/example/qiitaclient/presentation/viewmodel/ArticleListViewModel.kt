@@ -3,10 +3,14 @@ package com.example.qiitaclient.presentation.viewmodel
 import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.example.qiitaclient.domain.model.Article
 import com.example.qiitaclient.domain.repository.ArticleListRepository
+import com.example.qiitaclient.domain.repository.ArticlePagingSource
 import com.example.qiitaclient.presentation.viewmodel.common.showErrorDialog
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -16,33 +20,13 @@ class ArticleListViewModel(
     private val articleRepository: ArticleListRepository
 ) : AndroidViewModel(application) {
 
-    private val _articleDataList = MutableLiveData(listOf<Article>())
-    val articleDataList: LiveData<List<Article>> = _articleDataList
-
     val isBusy = MutableLiveData(false)
 
-    private fun getArticleList() {
-        viewModelScope.launch(Dispatchers.Default) {
-            articleRepository.getArticleList(
-                {
-                    _articleDataList.postValue(it)
-                }
-            ) {
-                withContext(Dispatchers.Main) {
-                    showErrorDialog(activity, ::getArticleList)
-                }
-            }
-        }
-    }
-
-    init {
-        getArticleList()
-    }
-
-    fun onRefresh() {
-        isBusy.postValue(true)
-        getArticleList()
-    }
+    val flow = Pager(
+            PagingConfig(pageSize = 20, initialLoadSize = 20)
+        ) {
+            ArticlePagingSource()
+        }.flow
 
     companion object {
         class Factory(
