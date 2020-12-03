@@ -1,6 +1,4 @@
 package com.example.qiitaclient.domain.repository
-
-
 import com.example.qiitaclient.domain.model.Article
 import com.example.qiitaclient.domain.service.ApiClient
 
