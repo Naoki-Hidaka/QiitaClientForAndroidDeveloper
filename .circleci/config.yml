@@ -12,20 +12,19 @@ commands:
     steps:
       - run:
           name: Say Hello
-          commands: |
-            ENV="Hello"
+          command: |
+            BAR=Hello
 
 orbs:
   android: circleci/android@0.2.1
 
 jobs:
-  build:
+  deploy:
     executor: android/android
     parameters:
       env:
         type: enum
         enum: ["debug", "release"]
-
     steps:
       - checkout
       - hello
@@ -33,24 +32,26 @@ jobs:
       - run:
           name: Test
           command: |
-            echo $ENV
-            echo $FOO
+            echo $BAR
             ENV=(<< parameters.env >>)
             echo $ENV
             ENV_UPPER_CASE=${ENV[@]~}
             echo $ENV_UPPER_CASE
       - run:
           name: Build with Gradle
-          command: ./gradlew assemble<< parameter.env >>
+          command: ./gradlew assemble<< parameters.env >>
       - run:
           name: Echo
           command: ls app/build/outputs/apk/debug
 
 workflows:
   version: 2.1
-  build:
+  build_deploy:
     jobs:
-      - build:
+      - deploy:
           name: deploy_dev
           env: debug
+      - deploy:
+          name: deploy_release
+          env: release
 
