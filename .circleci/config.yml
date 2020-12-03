@@ -26,7 +26,7 @@ jobs:
             echo $ENV_UPPER_CASE
       - run:
           name: Build with Gradle
-          command: ./gradlew assemble${ENV}
+          command: ./gradlew assemble$ENV
       - run:
           name: Echo
           command: ls app/build/outputs/apk/debug
