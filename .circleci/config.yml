@@ -13,10 +13,10 @@ jobs:
           command: ./gradlew build
           
 workflows:
-  version: 2.1
-  build_and_deploy:
+  version: 2
+  build:
     jobs:
       - build:
         filters:
           branches:
-            only: develop
+            only: master
