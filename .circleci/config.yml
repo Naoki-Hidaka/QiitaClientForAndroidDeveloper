@@ -1,4 +1,4 @@
-version: 2.1
+version: 2
 
 orbs:
   android: circleci/android@0.2.1
@@ -11,12 +11,18 @@ jobs:
       - checkout
       - run:
           command: ./gradlew build
+
+  test:
+    steps:
+      - run:
+          command: echo "test"
           
 workflows:
   version: 2
   build:
     jobs:
+      - test
       - build:
-        filters:
-          branches:
-            only: master
+          filters:
+            branches:
+              only: master
