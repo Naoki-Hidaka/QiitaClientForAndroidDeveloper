@@ -24,7 +24,7 @@ jobs:
             echo $ENV
             ENV_UPPER_CASE=${ENV[@]~}
             echo $ENV_UPPER_CASE
-      - run: ./gradlew assemble$ENV
+      - run: ./gradlew "assemble$ENV"
       - run:
           name: Echo
           command: ls /app/build/outputs/apk/debug
