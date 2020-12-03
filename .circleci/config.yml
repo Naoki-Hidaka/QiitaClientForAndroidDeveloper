@@ -13,7 +13,7 @@ commands:
       - run:
           name: Say Hello
           command: |
-            export BAR=Hello
+            echo "export BAR=Hello" >> $BASH_ENV
 
 orbs:
   android: circleci/android@0.2.1
