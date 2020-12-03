@@ -13,7 +13,7 @@ commands:
       - run:
           name: Say Hello
           command: |
-            BAR=Hello
+            export BAR=Hello
 
 orbs:
   android: circleci/android@0.2.1
