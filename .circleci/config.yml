@@ -1,11 +1,11 @@
-version: 2
-
-orbs:
-  android: circleci/android@0.2.1
+version: 2.1
 
 anchors:
   hello: &hello
     - run: echo "Hello"
+
+orbs:
+  android: circleci/android@0.2.1
 
 jobs:
   build:
@@ -17,7 +17,7 @@ jobs:
       - <<: *hello
 
 workflows:
-  version: 2
+  version: 2.1
   build:
     jobs:
       - build:
