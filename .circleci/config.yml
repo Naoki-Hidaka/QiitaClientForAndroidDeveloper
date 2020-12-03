@@ -29,7 +29,7 @@ jobs:
           command: ./gradlew assemble${ENV}
       - run:
           name: Echo
-          command: ls /app/build/outputs/apk/debug
+          command: ls app/build/outputs/apk/debug
       - <<: *hello
 
 workflows:
