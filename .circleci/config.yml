@@ -10,9 +10,19 @@ orbs:
 jobs:
   build:
     executor: android/android
+    parameters:
+      env:
+        type: enum
+        enum: ["dev", "stg", "production"]
 
     steps:
       - checkout
+      - run:
+          name: Test
+          run: |
+            ENV = $(<< parameters.env >>)
+            ENV_UPPER_CASE=${ENV[@]~}
+            echo $ENV_UPPER_CASE
       - run: ./gradlew build
       - <<: *hello
 
@@ -21,6 +31,6 @@ workflows:
   build:
     jobs:
       - build:
-          filters:
-            branches:
-              only: master
+          name: deploy_dev
+          env: dev
+
