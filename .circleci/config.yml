@@ -20,7 +20,7 @@ jobs:
       - run:
           name: Test
           command: |
-            ENV = $(<< parameters.env >>)
+            ENV=($<< parameters.env >>)
             echo $ENV
             ENV_UPPER_CASE=${ENV[@]~}
             echo $ENV_UPPER_CASE
