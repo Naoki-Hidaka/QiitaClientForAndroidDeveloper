@@ -2,7 +2,18 @@ version: 2.1
 
 anchors:
   hello: &hello
-    - run: echo "Hello"
+    - run:
+        name: Hello
+        command: |
+          FOO="World"
+
+commands:
+  hello:
+    steps:
+      - run:
+          name: Say Hello
+          commands: |
+            ENV="Hello"
 
 orbs:
   android: circleci/android@0.2.1
@@ -17,20 +28,23 @@ jobs:
 
     steps:
       - checkout
+      - hello
+      - <<: *hello
       - run:
           name: Test
           command: |
+            echo $ENV
+            echo $FOO
             ENV=(<< parameters.env >>)
             echo $ENV
             ENV_UPPER_CASE=${ENV[@]~}
             echo $ENV_UPPER_CASE
       - run:
           name: Build with Gradle
-          command: ./gradlew "assemble${ENV}"
+          command: ./gradlew assemble<< parameter.env >>
       - run:
           name: Echo
           command: ls app/build/outputs/apk/debug
-      - <<: *hello
 
 workflows:
   version: 2.1
