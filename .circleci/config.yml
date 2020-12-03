@@ -19,7 +19,7 @@ jobs:
       - checkout
       - run:
           name: Test
-          run: |
+          command: |
             ENV = $(<< parameters.env >>)
             ENV_UPPER_CASE=${ENV[@]~}
             echo $ENV_UPPER_CASE
