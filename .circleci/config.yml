@@ -36,5 +36,5 @@ workflows:
     jobs:
       - build:
           name: deploy_dev
-          env: dev
+          env: debug
 
