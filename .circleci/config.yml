@@ -1,0 +1,22 @@
+version: 2.1
+
+orbs:
+  android: circleci/android@0.2.1
+
+jobs:
+  build:
+    executor: android/android
+
+    steps:
+      - checkout
+      - run:
+          command: ./gradlew build
+          
+workflows:
+  version: 2.1
+  build_and_deploy:
+    jobs:
+      - build:
+        filters:
+          branches:
+            only: develop
