@@ -17,6 +17,6 @@ jobs:
           curl \
           -X POST \
           -H "Content-Type: application/json" \
-          -H "Circle-Token: ${{ secrets.CIRCLE_TOKEN}}" \
+          -H "Circle-Token: ${{ secrets.CIRCLE_TOKEN }}" \
           -d '{ "branch": "develop", "parameters": { "build_variant": "debug", "pull_request_title": "${{ github.event.pull_request.title}}"}}' \
           https://circleci.com/api/v2/project/github/${{ github.event.repository.full_name }}/pipeline
