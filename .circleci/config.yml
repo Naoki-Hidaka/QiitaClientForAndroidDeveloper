@@ -58,12 +58,12 @@ jobs:
 workflows:
   version: 2.1
   build_deploy:
-    when: << pipeline.parameters.build_variant >>="debug"
+    when: << pipeline.parameters.build_variant >>=="debug"
     jobs:
       - deploy:
           name: deploy
   release:
-    when: << pipeline.parameters.build_variant >>="release"
+    when: << pipeline.parameters.build_variant >>=="release"
     jobs:
       - deploy:
           name: release
