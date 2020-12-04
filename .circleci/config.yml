@@ -1,26 +1,64 @@
 version: 2.1
 
+parameters:
+  build_variant:
+    type: enum
+    enum: ["debug", "release"]
+    default: debug
+  pull_request_title:
+    type: string
+    default: ""
+
 anchors:
   hello: &hello
-    - run: echo "Hello"
+    - run:
+        name: Hello
+        command: |
+          FOO="World"
+
+commands:
+  hello:
+    steps:
+      - run:
+          name: Say Hello
+          command: |
+            echo "export BAR=Hello" >> $BASH_ENV
 
 orbs:
   android: circleci/android@0.2.1
 
 jobs:
-  build:
+  deploy:
     executor: android/android
-
     steps:
       - checkout
-      - run: ./gradlew build
-      - <<: *hello
+      - hello
+      - run:
+          name: Test
+          command: |
+            echo "Branch $branch"
+            echo << pipeline.parameters.pull_request_title >>
+            ENV=(<< pipeline.parameters.build_variant >>)
+            echo $ENV
+            ENV_UPPER_CASE=${ENV[@]~}
+            echo $ENV_UPPER_CASE
+      - run:
+          name: Build with Gradle
+          command: ./gradlew assemble<< pipeline.parameters.build_variant >>
+      - run:
+          name: Echo
+          command: ls app/build/outputs/apk/debug
+  lint:
+    executor: android/android
+    steps:
+      - checkout
+      - hello
 
 workflows:
   version: 2.1
-  build:
+  build_deploy:
     jobs:
-      - build:
-          filters:
-            branches:
-              only: master
+      - deploy:
+          name: deploy
+
+
