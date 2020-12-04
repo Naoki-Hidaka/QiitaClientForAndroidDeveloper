@@ -22,7 +22,7 @@ parameters:
   build_variant:
     type: enum
     enum: ["debug", "release"]
-    default: debug
+    default: "debug"
   pull_request_title:
     type: string
     default: ""
