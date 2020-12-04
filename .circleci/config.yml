@@ -3,7 +3,7 @@ version: 2.1
 parameters:
   run_deploy:
     type: boolean
-    defalut: false
+    default: false
 
 anchors:
   hello: &hello
