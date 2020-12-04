@@ -37,6 +37,8 @@ jobs:
       - run:
           name: Test
           command: |
+            echo << pipeline.parameters.build_variant>>
+            echo << pipeline.parameters.pull_request_title >>
             echo "Branch $branch"
             echo $ENV
             ENV_UPPER_CASE=${ENV[@]~}
