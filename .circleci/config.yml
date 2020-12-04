@@ -1,5 +1,11 @@
 version: 2.1
 
+parameters:
+  build_variant:
+    type: enum
+    enum: ["debug", "release"]
+    default: debug
+
 anchors:
   hello: &hello
     - run:
@@ -21,10 +27,6 @@ orbs:
 jobs:
   deploy:
     executor: android/android
-    parameters:
-      env:
-        type: enum
-        enum: ["debug", "release"]
     steps:
       - checkout
       - hello
@@ -34,13 +36,13 @@ jobs:
           command: |
             echo $BAR
             echo $FOO
-            ENV=(<< parameters.env >>)
+            ENV=(<< pipeline.parameters.build_variant >>)
             echo $ENV
             ENV_UPPER_CASE=${ENV[@]~}
             echo $ENV_UPPER_CASE
       - run:
           name: Build with Gradle
-          command: ./gradlew assemble<< parameters.env >>
+          command: ./gradlew assemble<< pipeline.parameters.build_variant >>
       - run:
           name: Echo
           command: ls app/build/outputs/apk/debug
@@ -56,6 +58,8 @@ workflows:
     jobs:
       - deploy:
           name: deploy_dev
-          env: debug
+          filters:
+            branches:
+              only: $branch
 
 
