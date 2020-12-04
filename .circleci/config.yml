@@ -45,7 +45,7 @@ jobs:
           command: echo "build"
       - run:
           name: Echo
-          command: ls app/build/outputs/apk/debug
+          command: echo "echo"
   lint:
     executor: android/android
     steps:
