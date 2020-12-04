@@ -53,9 +53,9 @@ jobs:
 workflows:
   version: 2.1
   build_deploy:
+    when: << pipeline.parameters.run_deploy >>
     jobs:
       - deploy:
-          when: << pipeline.parameters.run_deploy >>
           name: deploy_dev
           env: debug
 
