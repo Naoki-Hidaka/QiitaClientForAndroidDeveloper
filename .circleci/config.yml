@@ -5,6 +5,9 @@ parameters:
     type: enum
     enum: ["debug", "release"]
     default: debug
+  pull_request_title:
+    type: string
+    default: ""
 
 anchors:
   hello: &hello
@@ -30,12 +33,11 @@ jobs:
     steps:
       - checkout
       - hello
-      - <<: *hello
       - run:
           name: Test
           command: |
-            echo $BAR
-            echo $FOO
+            echo "Branch $branch"
+            echo << pipeline.parameters.pull_request_title >>
             ENV=(<< pipeline.parameters.build_variant >>)
             echo $ENV
             ENV_UPPER_CASE=${ENV[@]~}
@@ -57,9 +59,6 @@ workflows:
   build_deploy:
     jobs:
       - deploy:
-          name: deploy_dev
-          filters:
-            branches:
-              only: $branch
+          name: deploy
 
 
