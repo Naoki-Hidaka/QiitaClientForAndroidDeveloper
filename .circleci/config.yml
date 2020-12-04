@@ -1,14 +1,5 @@
 version: 2.1
 
-parameters:
-  build_variant:
-    type: enum
-    enum: ["debug", "release"]
-    default: debug
-  pull_request_title:
-    type: string
-    default: ""
-
 anchors:
   hello: &hello
     - run:
@@ -26,6 +17,16 @@ commands:
 
 orbs:
   android: circleci/android@0.2.1
+
+parameters:
+  build_variant:
+    type: enum
+    enum: ["debug", "release"]
+    default: debug
+  pull_request_title:
+    type: string
+    default: ""
+
 
 jobs:
   deploy:
