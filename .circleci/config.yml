@@ -1,10 +1,5 @@
 version: 2.1
 
-parameters:
-  run_deploy:
-    type: boolean
-    default: false
-
 anchors:
   hello: &hello
     - run:
@@ -58,13 +53,9 @@ jobs:
 workflows:
   version: 2.1
   build_deploy:
-    when: << pipeline.parameters.run_deploy >>
     jobs:
       - deploy:
           name: deploy_dev
           env: debug
-  lint:
-    jobs:
-      - lint
 
 
