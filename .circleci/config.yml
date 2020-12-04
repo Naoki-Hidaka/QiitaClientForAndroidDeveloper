@@ -59,13 +59,13 @@ workflows:
   version: 2.1
   build_deploy:
     when:
-      - equal: [debug, << pipeline.parameters.build_variant >>]
+      equal: [debug, << pipeline.parameters.build_variant >>]
     jobs:
       - deploy:
           name: deploy
   release:
     when:
-      - equal: [release, << pipeline.parameters.build_variant >>]
+      equal: [release, << pipeline.parameters.build_variant >>]
     jobs:
       - deploy:
           name: release
