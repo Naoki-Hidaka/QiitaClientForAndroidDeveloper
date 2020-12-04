@@ -1,5 +1,10 @@
 version: 2.1
 
+parameters:
+  run_deploy:
+    type: boolean
+    defalut: false
+
 anchors:
   hello: &hello
     - run:
@@ -50,9 +55,7 @@ workflows:
   build_deploy:
     jobs:
       - deploy:
+          when: << pipeline.parameters.run_deploy >>
           name: deploy_dev
           env: debug
-      - deploy:
-          name: deploy_release
-          env: release
 
