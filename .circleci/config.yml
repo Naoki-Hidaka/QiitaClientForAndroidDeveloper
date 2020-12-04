@@ -24,6 +24,7 @@ orbs:
   android: circleci/android@0.2.1
 
 jobs:
+  when: << pipeline.parameters.run_deploy >>
   deploy:
     executor: android/android
     parameters:
@@ -53,7 +54,6 @@ jobs:
 workflows:
   version: 2.1
   build_deploy:
-    when: << pipeline.parameters.run_deploy >>
     jobs:
       - deploy:
           name: deploy_dev
