@@ -14,13 +14,13 @@ import com.example.qiitaclient.databinding.FragmentArticleListBinding
 import com.example.qiitaclient.databinding.ItemArticleListBinding
 import com.example.qiitaclient.databinding.ItemTagBinding
 import com.example.qiitaclient.presentation.viewmodel.ArticleListViewModel
+import timber.log.Timber
 
 class ArticleListFragment : Fragment() {
 
     private val viewModel: ArticleListViewModel by viewModels {
         ArticleListViewModel.Companion.Factory(
             activity?.application,
-            activity
         )
     }
 
@@ -28,7 +28,10 @@ class ArticleListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = FragmentArticleListBinding.inflate(inflater, container, false).let {
+    ): View = FragmentArticleListBinding.inflate(inflater, container, false).let {
+        viewModel.isLoading.observe(viewLifecycleOwner) {
+            Timber.d("debug: isLoading is $it")
+        }
         it.lifecycleOwner = viewLifecycleOwner
         it.recyclerView.apply {
             adapter = ArticleListAdapter()
@@ -46,20 +49,20 @@ class ArticleListFragment : Fragment() {
         override fun onBindViewHolder(holder: ArticleListViewHolder, position: Int) {
             holder.binding.let {
                 it.lifecycleOwner = viewLifecycleOwner
-                it.article = viewModel.articleDataList.value?.get(position)
+                it.article = viewModel.articleList.value?.get(position)
                 it.recyclerView.apply {
                     adapter = TagListAdapter(position)
                     layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
                 }
                 it.constrainLayout.setOnClickListener {
-                    val uri = Uri.parse(viewModel.articleDataList.value?.get(position)?.url)
+                    val uri = Uri.parse(viewModel.articleList.value?.get(position)?.url)
                     val intent = Intent(Intent.ACTION_VIEW, uri)
                     startActivity(intent)
                 }
             }
         }
 
-        override fun getItemCount(): Int = viewModel.articleDataList.value?.size ?: 0
+        override fun getItemCount(): Int = viewModel.articleList.value?.size ?: 0
     }
 
     inner class TagListAdapter(private val itemPosition: Int) : RecyclerView.Adapter<TagListViewHolder>() {
@@ -70,11 +73,11 @@ class ArticleListFragment : Fragment() {
         override fun onBindViewHolder(holder: TagListViewHolder, position: Int) {
             holder.binding.let {
                 it.lifecycleOwner = viewLifecycleOwner
-                it.tag = viewModel.articleDataList.value?.get(itemPosition)?.tags?.get(position)?.name
+                it.tag = viewModel.articleList.value?.get(itemPosition)?.tags?.get(position)?.name
             }
         }
 
-        override fun getItemCount(): Int = viewModel.articleDataList.value?.get(itemPosition)?.tags?.size ?: 0
+        override fun getItemCount(): Int = viewModel.articleList.value?.get(itemPosition)?.tags?.size ?: 0
     }
 
     class ArticleListViewHolder(val binding: ItemArticleListBinding) : RecyclerView.ViewHolder(binding.root)

@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:onRefreshListener="@{() -> viewModel.onRefresh()}"
-        app:refreshing="@{viewModel.isBusy()}">
+        app:refreshing="@{viewModel.isLoading()}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -22,12 +22,13 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
-                binding_listObserve="@{viewModel.articleDataList}"
+                binding_listObserve="@{viewModel.articleList}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
             <ProgressBar
-                binding_toggle="@{viewModel.articleDataList.isEmpty()}"
+                android:id="@+id/progressBar"
+                binding_toggle="@{viewModel.isLoading()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
