@@ -1,6 +1,5 @@
 package com.example.qiitaclient.presentation.viewmodel
 
-import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.*
 import com.example.qiitaclient.domain.model.Article
@@ -19,7 +18,7 @@ class ArticleListViewModel(
     val isLoading = _isLoading
 
     private val _articleList: LiveData<List<Article>?> = _forcedUpdate.switchMap {
-        if(it) {
+        if (it) {
             _isLoading.value = true
             viewModelScope.launch {
                 articleRepository.refreshArticleList()

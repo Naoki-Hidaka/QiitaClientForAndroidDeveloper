@@ -14,7 +14,6 @@ import com.example.qiitaclient.databinding.FragmentArticleListBinding
 import com.example.qiitaclient.databinding.ItemArticleListBinding
 import com.example.qiitaclient.databinding.ItemTagBinding
 import com.example.qiitaclient.presentation.viewmodel.ArticleListViewModel
-import timber.log.Timber
 
 class ArticleListFragment : Fragment() {
 
@@ -29,9 +28,6 @@ class ArticleListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentArticleListBinding.inflate(inflater, container, false).let {
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            Timber.d("debug: isLoading is $it")
-        }
         it.lifecycleOwner = viewLifecycleOwner
         it.recyclerView.apply {
             adapter = ArticleListAdapter()
@@ -42,9 +38,10 @@ class ArticleListFragment : Fragment() {
     }
 
     inner class ArticleListAdapter : RecyclerView.Adapter<ArticleListViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleListViewHolder = ArticleListViewHolder(
-            ItemArticleListBinding.inflate(LayoutInflater.from(context), parent, false)
-        )
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleListViewHolder =
+            ArticleListViewHolder(
+                ItemArticleListBinding.inflate(LayoutInflater.from(context), parent, false)
+            )
 
         override fun onBindViewHolder(holder: ArticleListViewHolder, position: Int) {
             holder.binding.let {
@@ -65,10 +62,12 @@ class ArticleListFragment : Fragment() {
         override fun getItemCount(): Int = viewModel.articleList.value?.size ?: 0
     }
 
-    inner class TagListAdapter(private val itemPosition: Int) : RecyclerView.Adapter<TagListViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagListViewHolder = TagListViewHolder(
-            ItemTagBinding.inflate(LayoutInflater.from(context), parent, false)
-        )
+    inner class TagListAdapter(private val itemPosition: Int) :
+        RecyclerView.Adapter<TagListViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagListViewHolder =
+            TagListViewHolder(
+                ItemTagBinding.inflate(LayoutInflater.from(context), parent, false)
+            )
 
         override fun onBindViewHolder(holder: TagListViewHolder, position: Int) {
             holder.binding.let {
@@ -77,10 +76,12 @@ class ArticleListFragment : Fragment() {
             }
         }
 
-        override fun getItemCount(): Int = viewModel.articleList.value?.get(itemPosition)?.tags?.size ?: 0
+        override fun getItemCount(): Int =
+            viewModel.articleList.value?.get(itemPosition)?.tags?.size ?: 0
     }
 
-    class ArticleListViewHolder(val binding: ItemArticleListBinding) : RecyclerView.ViewHolder(binding.root)
+    class ArticleListViewHolder(val binding: ItemArticleListBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     class TagListViewHolder(val binding: ItemTagBinding) : RecyclerView.ViewHolder(binding.root)
 
