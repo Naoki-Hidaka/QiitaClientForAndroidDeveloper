@@ -2,9 +2,8 @@ package com.example.qiitaclient.presentation.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.qiitaclient.domain.model.Article
+import com.example.qiitaclient.domain.model.ArticleWithTag
 import com.example.qiitaclient.domain.repository.ArticleListRepository
-import com.example.qiitaclient.domain.repository.IArticleListRepository
 import kotlinx.coroutines.launch
 
 class ArticleListViewModel(
@@ -17,7 +16,7 @@ class ArticleListViewModel(
     private val _isLoading = MutableLiveData(false)
     val isLoading = _isLoading
 
-    private val _articleList: LiveData<List<Article>?> = _forcedUpdate.switchMap {
+    private val _articleList: LiveData<List<ArticleWithTag>?> = _forcedUpdate.switchMap {
         if (it) {
             _isLoading.value = true
             viewModelScope.launch {
@@ -41,7 +40,7 @@ class ArticleListViewModel(
     companion object {
         class Factory(
             private val application: Application?,
-            private val articleRepository: ArticleListRepository = IArticleListRepository,
+            private val articleRepository: ArticleListRepository
         ) : ViewModelProvider.AndroidViewModelFactory(application!!) {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel?> create(modelClass: Class<T>) = ArticleListViewModel(

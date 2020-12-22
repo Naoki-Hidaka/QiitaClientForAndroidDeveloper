@@ -22,13 +22,13 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
-                binding_listObserve="@{viewModel.articleList}"
+                binding_diffObserve="@{viewModel.articleList}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
-                binding_toggle="@{viewModel.isLoading()}"
+                binding_toggle="@{viewModel.articleList.isEmpty()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
