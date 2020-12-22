@@ -9,7 +9,11 @@ class ArticleListLocalDataSource(
     private val articleListDao: ArticleListDao
 ) {
 
-    fun getArticleList(): LiveData<List<ArticleWithTag>?> {
+    fun observeArticleList(): LiveData<List<ArticleWithTag>?> {
+        return articleListDao.observeArticleList()
+    }
+
+    suspend fun getArticleList(): List<ArticleWithTag> {
         return articleListDao.getArticleList()
     }
 
@@ -30,7 +34,11 @@ class ArticleListLocalDataSource(
 interface ArticleListDao {
     @Transaction
     @Query("SELECT * FROM article")
-    fun getArticleList(): LiveData<List<ArticleWithTag>?>
+    fun observeArticleList(): LiveData<List<ArticleWithTag>?>
+
+    @Transaction
+    @Query("SELECT * FROM article")
+    suspend fun getArticleList(): List<ArticleWithTag>
 
     @Insert
     suspend fun saveArticle(article: Article)

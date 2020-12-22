@@ -19,6 +19,7 @@ import com.example.qiitaclient.domain.model.ArticleWithTag
 import com.example.qiitaclient.domain.model.Tag
 import com.example.qiitaclient.domain.service.MyApplication
 import com.example.qiitaclient.presentation.viewmodel.ArticleListViewModel
+import timber.log.Timber
 
 class ArticleListFragment : Fragment() {
 
@@ -34,6 +35,12 @@ class ArticleListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentArticleListBinding.inflate(inflater, container, false).let {
+        (activity?.application as MyApplication).provideArticleListRepository().observeArticleList()
+            .observe(viewLifecycleOwner) {
+                it?.run {
+                    Timber.d("debug: ${this.hashCode()}")
+                }
+            }
         it.lifecycleOwner = viewLifecycleOwner
         it.recyclerView.apply {
             adapter = ArticleListAdapter()

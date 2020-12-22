@@ -24,7 +24,7 @@ class ArticleListViewModel(
                 _isLoading.value = false
             }
         }
-        articleRepository.getArticleList().distinctUntilChanged()
+        articleRepository.observeArticleList().distinctUntilChanged()
     }
 
     val articleList = _articleList
