@@ -1,25 +1,26 @@
 package com.example.qiitaclient.domain.repository
-import com.example.qiitaclient.domain.model.Article
-import com.example.qiitaclient.domain.service.ApiClient
 
-object ArticleListRepository {
+import androidx.lifecycle.LiveData
+import com.example.qiitaclient.domain.dataSource.ArticleListLocalDataSource
+import com.example.qiitaclient.domain.dataSource.ArticleListRemoteDataSource
+import com.example.qiitaclient.domain.model.ArticleWithTag
 
-    suspend fun getArticleList(
-        callback: suspend (List<Article>?) -> Unit,
-        fallback: suspend () -> Unit
-    ) {
-        runCatching {
-            ApiClient.retrofit.getArticles(100, 1)
+class ArticleListRepository(
+    private val remoteDataSource: ArticleListRemoteDataSource,
+    private val localDataSource: ArticleListLocalDataSource
+) {
+
+    fun getArticleList(): LiveData<List<ArticleWithTag>?> {
+        return localDataSource.getArticleList()
+    }
+
+    suspend fun refreshArticleList() {
+        localDataSource.deleteAllArticle()
+        remoteDataSource.getArticleList {
+            it?.forEach {
+                localDataSource.saveArticle(it)
+            }
         }
-            .onSuccess {
-                if(it.isSuccessful) {
-                    callback(it.body())
-                } else {
-                    fallback()
-                }
-            }
-            .onFailure {
-                fallback()
-            }
     }
 }
+

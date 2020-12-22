@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
+apply plugin: "dagger.hilt.android.plugin"
 
 android {
     compileSdkVersion 30
@@ -62,7 +63,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.2.5"
 
     //Navigation Component
-    def nav_version = "2.3.1"
+    def nav_version = "2.3.2"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "androidx.navigation:navigation-common:$nav_version"
@@ -79,10 +80,18 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
 
     // Paging Library
-    def paging_version = "3.0.0-alpha08"
+    def paging_version = "3.0.0-alpha11"
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
+    // Hilt
+    implementation "com.google.dagger:hilt-android:2.28-alpha"
+    kapt "com.google.dagger:hilt-android-compiler:2.28-alpha"
 
+    //Room
+    def room_version = "2.2.6"
+    implementation "androidx.room:room-ktx:$room_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 }

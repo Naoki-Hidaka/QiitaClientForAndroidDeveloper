@@ -1,59 +1,50 @@
 package com.example.qiitaclient.presentation.viewmodel
 
-import android.app.Activity
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.qiitaclient.domain.model.Article
+import com.example.qiitaclient.domain.model.ArticleWithTag
 import com.example.qiitaclient.domain.repository.ArticleListRepository
-import com.example.qiitaclient.presentation.viewmodel.common.showErrorDialog
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ArticleListViewModel(
     application: Application,
-    private val activity: Activity,
     private val articleRepository: ArticleListRepository
 ) : AndroidViewModel(application) {
 
-    private val _articleDataList = MutableLiveData(listOf<Article>())
-    val articleDataList: LiveData<List<Article>> = _articleDataList
+    private val _forcedUpdate = MutableLiveData(false)
 
-    val isBusy = MutableLiveData(false)
+    private val _isLoading = MutableLiveData(false)
+    val isLoading = _isLoading
 
-    private fun getArticleList() {
-        viewModelScope.launch(Dispatchers.Default) {
-            articleRepository.getArticleList(
-                {
-                    _articleDataList.postValue(it)
-                }
-            ) {
-                withContext(Dispatchers.Main) {
-                    showErrorDialog(activity, ::getArticleList)
-                }
+    private val _articleList: LiveData<List<ArticleWithTag>?> = _forcedUpdate.switchMap {
+        if (it) {
+            _isLoading.value = true
+            viewModelScope.launch {
+                articleRepository.refreshArticleList()
+                _isLoading.value = false
             }
         }
+        articleRepository.getArticleList().distinctUntilChanged()
     }
 
+    val articleList = _articleList
+
     init {
-        getArticleList()
+        _forcedUpdate.value = true
     }
 
     fun onRefresh() {
-        isBusy.postValue(true)
-        getArticleList()
+        _forcedUpdate.postValue(true)
     }
 
     companion object {
         class Factory(
             private val application: Application?,
-            private val activity: Activity?,
-            private val articleRepository: ArticleListRepository = ArticleListRepository,
+            private val articleRepository: ArticleListRepository
         ) : ViewModelProvider.AndroidViewModelFactory(application!!) {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel?> create(modelClass: Class<T>) = ArticleListViewModel(
                 application!!,
-                activity!!,
                 articleRepository,
             ) as T
         }
