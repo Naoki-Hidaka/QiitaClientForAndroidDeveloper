@@ -1,107 +1,88 @@
 package com.example.qiitaclient.presentation.view.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.qiitaclient.R
 import com.example.qiitaclient.databinding.FragmentArticleListBinding
 import com.example.qiitaclient.databinding.ItemArticleListBinding
-import com.example.qiitaclient.databinding.ItemTagBinding
 import com.example.qiitaclient.domain.model.ArticleWithTag
-import com.example.qiitaclient.domain.model.Tag
 import com.example.qiitaclient.domain.service.MyApplication
 import com.example.qiitaclient.presentation.viewmodel.ArticleListViewModel
 
-class ArticleListFragment : Fragment() {
+class ArticleListFragment : Fragment(R.layout.fragment_article_list) {
 
     private val viewModel: ArticleListViewModel by viewModels {
         ArticleListViewModel.Companion.Factory(
-            activity?.application,
-            (activity?.application as MyApplication).provideArticleListRepository()
+            (requireActivity().application as MyApplication).provideArticleListRepository()
         )
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = FragmentArticleListBinding.inflate(inflater, container, false).let {
-        it.lifecycleOwner = viewLifecycleOwner
-        it.recyclerView.apply {
-            adapter = ArticleListAdapter()
-            layoutManager = LinearLayoutManager(context)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val binding = FragmentArticleListBinding.bind(view)
+        val adapter = ArticleListAdapter(requireContext())
+        binding.recyclerView.adapter = adapter
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+
+        viewModel.articleList.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
         }
-        it.viewModel = viewModel
-        it.root
+        viewModel.isError.observe(viewLifecycleOwner) {
+            if (it) {
+                Toast.makeText(requireContext(), "エラーが発生しました", Toast.LENGTH_SHORT).show()
+                viewModel.onConsumeError()
+            }
+        }
     }
 
-    inner class ArticleListAdapter :
-        ListAdapter<ArticleWithTag, ArticleListViewHolder>(ArticleDiffCallback()) {
+    class ArticleListAdapter(private val context: Context) :
+        ListAdapter<ArticleWithTag, ArticleListAdapter.ArticleListViewHolder>(ArticleDiffCallback()) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleListViewHolder =
             ArticleListViewHolder(
                 ItemArticleListBinding.inflate(LayoutInflater.from(context), parent, false)
             )
 
         override fun onBindViewHolder(holder: ArticleListViewHolder, position: Int) {
+            val article = getItem(position).article
             holder.binding.let {
-                it.lifecycleOwner = viewLifecycleOwner
-                it.article = getItem(position).article
-                it.recyclerView.apply {
-                    adapter = TagListAdapter().apply { submitList(getItem(position).tags) }
-                    layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-                }
+                it.article = article
                 it.constrainLayout.setOnClickListener {
-                    val uri = Uri.parse(getItem(position).article.url)
+                    val uri = Uri.parse(article.url)
                     val intent = Intent(Intent.ACTION_VIEW, uri)
-                    startActivity(intent)
+                    context.startActivity(intent)
                 }
             }
         }
-    }
 
-    class ArticleDiffCallback : DiffUtil.ItemCallback<ArticleWithTag>() {
-        override fun areItemsTheSame(oldItem: ArticleWithTag, newItem: ArticleWithTag): Boolean =
-            oldItem.article.id == newItem.article.id
+        class ArticleDiffCallback : DiffUtil.ItemCallback<ArticleWithTag>() {
+            override fun areItemsTheSame(
+                oldItem: ArticleWithTag,
+                newItem: ArticleWithTag
+            ): Boolean =
+                oldItem.article == newItem.article
 
-        override fun areContentsTheSame(oldItem: ArticleWithTag, newItem: ArticleWithTag): Boolean =
-            oldItem == newItem
+            override fun areContentsTheSame(
+                oldItem: ArticleWithTag,
+                newItem: ArticleWithTag
+            ): Boolean =
+                oldItem.article.id == newItem.article.id
 
-    }
-
-    inner class TagListAdapter :
-        ListAdapter<Tag, TagListViewHolder>(TagDiffCallback()) {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagListViewHolder =
-            TagListViewHolder(
-                ItemTagBinding.inflate(LayoutInflater.from(context), parent, false)
-            )
-
-        override fun onBindViewHolder(holder: TagListViewHolder, position: Int) {
-            holder.binding.let {
-                it.lifecycleOwner = viewLifecycleOwner
-                it.tag = getItem(position).name
-            }
         }
+
+        class ArticleListViewHolder(val binding: ItemArticleListBinding) :
+            RecyclerView.ViewHolder(binding.root)
     }
-
-    class ArticleListViewHolder(val binding: ItemArticleListBinding) :
-        RecyclerView.ViewHolder(binding.root)
-
-    class TagListViewHolder(val binding: ItemTagBinding) : RecyclerView.ViewHolder(binding.root)
-
-    class TagDiffCallback : DiffUtil.ItemCallback<Tag>() {
-        override fun areItemsTheSame(oldItem: Tag, newItem: Tag): Boolean =
-            oldItem.name == newItem.name
-
-        override fun areContentsTheSame(oldItem: Tag, newItem: Tag): Boolean =
-            oldItem == newItem
-    }
-
 }

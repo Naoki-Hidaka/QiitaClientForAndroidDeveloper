@@ -14,7 +14,7 @@ data class Article(
 ) {
     fun formatDate(): String {
         val stringToDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.JAPANESE)
-        val date = stringToDate.parse(createdAt ?: "")
+        val date = stringToDate.parse(createdAt)
         val dateToString = SimpleDateFormat("yyyy/MM/dd", Locale.JAPANESE)
         return dateToString.format(date ?: Date())
     }

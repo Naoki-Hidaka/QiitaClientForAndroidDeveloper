@@ -10,17 +10,12 @@ class ArticleListRepository(
     private val localDataSource: ArticleListLocalDataSource
 ) {
 
-    fun getArticleList(): LiveData<List<ArticleWithTag>?> {
+    fun getArticleList(): LiveData<List<ArticleWithTag>> {
         return localDataSource.getArticleList()
     }
 
     suspend fun refreshArticleList() {
-        localDataSource.deleteAllArticle()
-        remoteDataSource.getArticleList {
-            it?.forEach {
-                localDataSource.saveArticle(it)
-            }
-        }
+        localDataSource.saveArticles(remoteDataSource.getArticleList())
     }
 }
 

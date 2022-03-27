@@ -13,7 +13,7 @@ object ApiClient {
     private const val accessToken = BuildConfig.ACCESS_TOKEN
 
     private val logging = HttpLoggingInterceptor().also {
-        it.setLevel(HttpLoggingInterceptor.Level.BASIC)
+        it.setLevel(HttpLoggingInterceptor.Level.BODY)
     }
 
     private val okHttpClient = OkHttpClient.Builder()
