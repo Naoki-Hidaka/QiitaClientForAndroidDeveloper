@@ -14,8 +14,8 @@ class ArticleListRepository(
         return localDataSource.getArticleList()
     }
 
-    suspend fun refreshArticleList() {
-        localDataSource.saveArticles(remoteDataSource.getArticleList())
+    suspend fun refreshArticleList(page: Int) {
+        localDataSource.saveArticles(remoteDataSource.getArticleList(page))
     }
 }
 

@@ -5,7 +5,7 @@ import com.example.qiitaclient.domain.service.ApiClient
 
 object ArticleListRemoteDataSource {
 
-    suspend fun getArticleList(): List<Article> {
-        return ApiClient.retrofit.getArticles(20, 1).body()!!
+    suspend fun getArticleList(page: Int): List<Article> {
+        return ApiClient.retrofit.getArticles(20, page).body()!!
     }
 }
