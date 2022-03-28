@@ -78,10 +78,6 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:$okhttp_version"
 
-    // Paging Library
-    def paging_version = "3.0.0-alpha11"
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
-
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
     // Hilt
@@ -93,4 +89,6 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
+
+    testImplementation "io.mockk:mockk:1.12.3"
 }
