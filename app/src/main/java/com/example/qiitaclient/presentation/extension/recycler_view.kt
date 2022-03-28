@@ -19,10 +19,7 @@ fun RecyclerView.diffObserve(items: List<ArticleWithTag>?) {
     }
 }
 
-@BindingAdapter(
-    value = ["onScrollEnd"],
-    requireAll = false
-)
+@BindingAdapter("onScrollEnd")
 fun RecyclerView.setOnScrollEnd(
     onScrollEnd: RecyclerViewExt.OnScrollEnd?,
 ) {

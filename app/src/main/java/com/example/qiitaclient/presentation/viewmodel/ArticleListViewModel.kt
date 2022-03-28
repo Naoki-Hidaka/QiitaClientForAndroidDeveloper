@@ -62,7 +62,7 @@ class ArticleListViewModel(
             private val articleRepository: ArticleListRepository
         ) : ViewModelProvider.NewInstanceFactory() {
             @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel?> create(modelClass: Class<T>) = ArticleListViewModel(
+            override fun <T : ViewModel> create(modelClass: Class<T>) = ArticleListViewModel(
                 articleRepository,
             ) as T
         }

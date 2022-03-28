@@ -10,7 +10,7 @@ import timber.log.Timber
 
 class MyApplication : Application() {
 
-    val db: AppDatabase by lazy {
+    private val db: AppDatabase by lazy {
         Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java,
@@ -20,6 +20,8 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        println()
 
         Timber.plant(Timber.DebugTree())
     }
