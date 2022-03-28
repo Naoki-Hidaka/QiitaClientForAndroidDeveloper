@@ -17,16 +17,13 @@ import com.example.qiitaclient.R
 import com.example.qiitaclient.databinding.FragmentArticleListBinding
 import com.example.qiitaclient.databinding.ItemArticleListBinding
 import com.example.qiitaclient.domain.model.ArticleWithTag
-import com.example.qiitaclient.domain.service.MyApplication
 import com.example.qiitaclient.presentation.viewmodel.ArticleListViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ArticleListFragment : Fragment(R.layout.fragment_article_list) {
 
-    private val viewModel: ArticleListViewModel by viewModels {
-        ArticleListViewModel.Companion.Factory(
-            (requireActivity().application as MyApplication).provideArticleListRepository()
-        )
-    }
+    private val viewModel: ArticleListViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

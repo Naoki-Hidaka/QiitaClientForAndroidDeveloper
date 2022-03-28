@@ -5,8 +5,11 @@ import androidx.lifecycle.map
 import com.example.qiitaclient.domain.dataSource.ArticleListLocalDataSource
 import com.example.qiitaclient.domain.dataSource.ArticleListRemoteDataSource
 import com.example.qiitaclient.domain.model.ArticleWithTag
+import dagger.Reusable
+import javax.inject.Inject
 
-class ArticleListRepository(
+@Reusable
+class ArticleListRepository @Inject constructor(
     private val remoteDataSource: ArticleListRemoteDataSource,
     private val localDataSource: ArticleListLocalDataSource
 ) {

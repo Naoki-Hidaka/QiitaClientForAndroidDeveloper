@@ -3,11 +3,14 @@ package com.example.qiitaclient.presentation.viewmodel
 import androidx.lifecycle.*
 import com.example.qiitaclient.domain.model.ArticleWithTag
 import com.example.qiitaclient.domain.repository.ArticleListRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 
-class ArticleListViewModel(
+@HiltViewModel
+class ArticleListViewModel @Inject constructor(
     private val articleRepository: ArticleListRepository
 ) : ViewModel() {
 

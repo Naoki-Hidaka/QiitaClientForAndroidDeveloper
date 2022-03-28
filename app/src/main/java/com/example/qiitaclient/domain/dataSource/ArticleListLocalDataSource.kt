@@ -4,8 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.qiitaclient.domain.model.Article
 import com.example.qiitaclient.domain.model.ArticleWithTag
+import dagger.Reusable
+import javax.inject.Inject
 
-class ArticleListLocalDataSource(
+@Reusable
+class ArticleListLocalDataSource @Inject constructor(
     private val articleListDao: ArticleListDao
 ) {
 
