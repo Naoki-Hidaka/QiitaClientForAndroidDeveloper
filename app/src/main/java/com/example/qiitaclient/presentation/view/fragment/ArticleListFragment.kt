@@ -43,6 +43,7 @@ class ArticleListFragment : Fragment(R.layout.fragment_article_list) {
                 viewModel.onConsumeError()
             }
         }
+        viewModel.init()
     }
 
     class ArticleListAdapter(private val context: Context) :

@@ -1,6 +1,9 @@
 package com.example.qiitaclient.presentation.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.qiitaclient.domain.model.ArticleWithTag
 import com.example.qiitaclient.domain.repository.ArticleListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +31,7 @@ class ArticleListViewModel @Inject constructor(
 
     val articleList: LiveData<List<ArticleWithTag>> = articleRepository.getArticleList()
 
-    init {
+    fun init() {
         refresh(page.get())
     }
 
@@ -57,17 +60,6 @@ class ArticleListViewModel @Inject constructor(
             _isLoading.value = false
             _refreshing.value = false
             loadMore.set(false)
-        }
-    }
-
-    companion object {
-        class Factory(
-            private val articleRepository: ArticleListRepository
-        ) : ViewModelProvider.NewInstanceFactory() {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>) = ArticleListViewModel(
-                articleRepository,
-            ) as T
         }
     }
 }
