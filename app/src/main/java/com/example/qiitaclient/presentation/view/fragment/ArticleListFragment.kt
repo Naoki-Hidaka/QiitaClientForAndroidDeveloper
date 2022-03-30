@@ -13,9 +13,11 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.example.qiitaclient.R
 import com.example.qiitaclient.databinding.FragmentArticleListBinding
 import com.example.qiitaclient.databinding.ItemArticleListBinding
+import com.example.qiitaclient.databinding.ItemBottomBinding
 import com.example.qiitaclient.domain.model.ArticleWithTag
 import com.example.qiitaclient.presentation.viewmodel.ArticleListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,26 +45,54 @@ class ArticleListFragment : Fragment(R.layout.fragment_article_list) {
                 viewModel.onConsumeError()
             }
         }
+        viewModel.onScrollTop.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.recyclerView.scrollToPosition(0)
+                viewModel.onScrolledTop()
+            }
+        }
         viewModel.init()
     }
 
     class ArticleListAdapter(private val context: Context) :
-        ListAdapter<ArticleWithTag, ArticleListAdapter.ArticleListViewHolder>(ArticleDiffCallback()) {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleListViewHolder =
-            ArticleListViewHolder(
-                ItemArticleListBinding.inflate(LayoutInflater.from(context), parent, false)
-            )
+        ListAdapter<ArticleWithTag, ArticleListAdapter.ViewHolderType>(ArticleDiffCallback()) {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderType =
+            when (viewType) {
+                ViewHolderType.ArticleListViewHolder.VIEW_TYPE -> ViewHolderType.ArticleListViewHolder(
+                    ItemArticleListBinding.inflate(LayoutInflater.from(context), parent, false)
+                )
+                ViewHolderType.BottomViewHolder.VIEW_TYPE -> ViewHolderType.BottomViewHolder(
+                    ItemBottomBinding.inflate(LayoutInflater.from(context), parent, false)
+                )
+                else -> throw IllegalStateException("invalid view type")
+            }
 
-        override fun onBindViewHolder(holder: ArticleListViewHolder, position: Int) {
-            val article = getItem(position).article
-            holder.binding.let {
-                it.article = article
-                it.constrainLayout.setOnClickListener {
-                    val uri = Uri.parse(article.url)
-                    val intent = Intent(Intent.ACTION_VIEW, uri)
-                    context.startActivity(intent)
+
+        override fun onBindViewHolder(holder: ViewHolderType, position: Int) {
+            when (holder) {
+                is ViewHolderType.ArticleListViewHolder -> {
+                    val article = getItem(position).article
+                    holder.binding.let {
+                        it.article = article
+                        it.constrainLayout.setOnClickListener {
+                            val uri = Uri.parse(article.url)
+                            val intent = Intent(Intent.ACTION_VIEW, uri)
+                            context.startActivity(intent)
+                        }
+                    }
+                }
+                is ViewHolderType.BottomViewHolder -> {
+                    // do nothing
                 }
             }
+
+        }
+
+        override fun getItemCount(): Int = if (currentList.isNotEmpty()) currentList.size + 1 else 0
+
+        override fun getItemViewType(position: Int): Int = when (position) {
+            currentList.size -> ViewHolderType.BottomViewHolder.VIEW_TYPE
+            else -> ViewHolderType.ArticleListViewHolder.VIEW_TYPE
         }
 
         class ArticleDiffCallback : DiffUtil.ItemCallback<ArticleWithTag>() {
@@ -80,7 +110,22 @@ class ArticleListFragment : Fragment(R.layout.fragment_article_list) {
 
         }
 
-        class ArticleListViewHolder(val binding: ItemArticleListBinding) :
-            RecyclerView.ViewHolder(binding.root)
+        sealed class ViewHolderType(binding: ViewBinding) :
+            RecyclerView.ViewHolder(binding.root) {
+
+            class ArticleListViewHolder(val binding: ItemArticleListBinding) :
+                ViewHolderType(binding) {
+                companion object {
+                    const val VIEW_TYPE: Int = 0
+                }
+            }
+
+            class BottomViewHolder(binding: ItemBottomBinding) :
+                ViewHolderType(binding) {
+                companion object {
+                    const val VIEW_TYPE: Int = 1
+                }
+            }
+        }
     }
 }

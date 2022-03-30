@@ -7,12 +7,9 @@ import com.example.qiitaclient.domain.model.ArticleWithTag
 import com.example.qiitaclient.domain.repository.ArticleListRepository
 import com.example.qiitaclient.presentation.viewmodel.ArticleListViewModel
 import com.google.common.truth.Truth.assertThat
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
@@ -55,14 +52,15 @@ class ArticleListViewModelUnitTest {
 
     @Test
     fun init_success() = runTest {
-        viewModel.init()
-        advanceUntilIdle()
-
+        val result = mutableListOf<List<ArticleWithTag>>()
         val observer = Observer<List<ArticleWithTag>> {
-            assertThat(it.size).isEqualTo(3)
+            result.add(it)
         }
         viewModel.articleList.observeForever(observer)
         viewModel.articleList.removeObserver(observer)
+
+        verify { articleListRepository.getArticleList() }
+        assertThat(result[0].size).isEqualTo(3)
     }
 
     @Test
@@ -109,5 +107,19 @@ class ArticleListViewModelUnitTest {
         viewModel.isError.removeObserver(observer)
         assertThat(result[1]).isTrue()
         assertThat(result[2]).isFalse()
+    }
+
+    @Test
+    fun onScrollEnd() = runTest {
+        viewModel.init()
+        advanceUntilIdle()
+
+        val result = mutableListOf<List<ArticleWithTag>>()
+        val observer = Observer<List<ArticleWithTag>> {
+            println(it)
+            assertThat(it.size).isEqualTo(3)
+        }
+        viewModel.articleList.observeForever(observer)
+        viewModel.articleList.removeObserver(observer)
     }
 }

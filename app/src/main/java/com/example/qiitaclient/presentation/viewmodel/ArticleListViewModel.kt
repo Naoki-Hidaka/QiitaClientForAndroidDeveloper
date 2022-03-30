@@ -1,9 +1,6 @@
 package com.example.qiitaclient.presentation.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.qiitaclient.domain.model.ArticleWithTag
 import com.example.qiitaclient.domain.repository.ArticleListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,10 +23,16 @@ class ArticleListViewModel @Inject constructor(
     private val _isError = MutableLiveData(false)
     val isError: LiveData<Boolean> = _isError
 
+    private val _onScrollTop = MutableLiveData(false)
+    val onScrollTop: LiveData<Boolean> = _onScrollTop
+
     private val page = AtomicInteger(1)
     private val loadMore = AtomicBoolean(false)
 
-    val articleList: LiveData<List<ArticleWithTag>> = articleRepository.getArticleList()
+    val articleList: LiveData<List<ArticleWithTag>> =
+        articleRepository.getArticleList().map { articleList ->
+            articleList.sortedByDescending { it.article.createdAt }
+        }
 
     fun init() {
         refresh(page.get())
@@ -50,10 +53,18 @@ class ArticleListViewModel @Inject constructor(
         }
     }
 
+    fun onScrolledTop() {
+        _onScrollTop.value = false
+    }
+
     private fun refresh(page: Int) {
         viewModelScope.launch {
             runCatching {
                 articleRepository.refreshArticleList(page)
+            }.onSuccess {
+                if (page == 0) {
+                    _onScrollTop.postValue(true)
+                }
             }.onFailure {
                 _isError.value = true
             }

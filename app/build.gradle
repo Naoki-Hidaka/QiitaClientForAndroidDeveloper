@@ -90,6 +90,9 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
+    implementation "dev.chrisbanes.insetter:insetter:0.6.1"
+    implementation "dev.chrisbanes.insetter:insetter-dbx:0.6.1"
+
     testImplementation "io.mockk:mockk:1.12.3"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0"
     testImplementation "com.google.truth:truth:1.1.3"
