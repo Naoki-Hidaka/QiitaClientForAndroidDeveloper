@@ -16,11 +16,12 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            style="@style/Toolbar"
+            style="@style/QiitaClient.Toolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:paddingTopSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"
             app:title="@string/app_name" />
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -35,10 +36,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:onScrollEnd="@{viewModel::onScrollEnd}"
-                app:paddingBottomSystemWindowInsets="@{true}" />
+                app:onScrollEnd="@{viewModel::onScrollEnd}" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
